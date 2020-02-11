@@ -1,0 +1,69 @@
+show databases;
+
+create database student;
+
+show databases;
+
+use student;
+
+show tables;
+
+create table gradelist (Roll_No INT unsigned NOT NULL AUTO_INCREMENT, Name VARCHAR(150) NOT NULL, Grade VARCHAR(20) NOT NULL, Class VARCHAR(20) NOT NULL, Address VARCHAR(20) NOT NULL, Mobile_No VARCHAR(20) NOT NULL, PRIMARY KEY (Roll_No));
+
+show tables;
+
+describe gradelist;
+
+insert into gradelist(Name, Grade, Class, Address, Mobile_no) values ('Yogesh','A+','First Year','Pune','7588107051');
+
+select * from gradelist;
+
+select Name from gradelist where Name='Raj'; 
+
+delete from gradelist where Name='Raj';
+
+select * from gradelist;
+
+alter table gradelist add gender VARCHAR(10) after Name;
+
+describe gradelist;
+
+update gradelist set gender='Male' where Roll_No=5;
+
+rename table gradelist to marklist; 
+
+select Address from marklist order by Name;
+
+select distinct Address from marklist;
+
+DML-
+
+1.select
+
+2.where
+
+3.insert
+
+4.update
+
+5.delete
+
+6.replace
+
+7.order by
+
+8.select distinct
+
+DDL-
+
+1.create
+
+2.drop
+
+3.alter
+
+4.add
+
+5.rename
+
+6.truncate 
