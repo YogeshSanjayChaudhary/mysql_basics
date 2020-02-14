@@ -3,6 +3,9 @@ The first step is installing MySQL server on server 1 with IP address 11.11.11.1
 
 $ sudo apt-get update
 $ sudo apt-get install mysql-server
+
+$ yum install mysql-server mysql -y (For RHEL)
+
 Press Y and hit Enter when prompted to confirm the installation.
 
 Step 2: Edit MySQL Configuration File on Server 1
