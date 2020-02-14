@@ -14,7 +14,7 @@ Next, edit the MySQL configuration file in order for MySQL server to allow remot
 $ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 Look for the line bind-address and change its value to '0.0.0.0'.
 
- bind-address = 127.0.0.1
+bind-address = 127.0.0.1
 Change to :
 
 bind-address =0.0.0.0
@@ -27,6 +27,17 @@ log_bin = /var/log/mysql/mysql-bin.log
 log_bin_index =/var/log/mysql/mysql-bin.log.index
 relay_log = /var/log/mysql/mysql-relay-bin
 relay_log_index = /var/log/mysql/mysql-relay-bin.index
+
+***************************
+Read Carefully:
+1.Whenever the master's database is modified, the change is written to a file, the so-called binary log, or binlog. This is done by the client thread that executed the query that modified the database.
+
+2.The master has a thread, called the dump thread, that continuously reads the master's binlog and sends it to the slave.
+
+3.The slave has a thread, called the IO thread, that receives the binlog that the master's dump thread sent, and writes it to a file: the relay log.
+
+4.The slave has another thread, called the SQL thread, that continuously reads the relay log and applies the changes to the slave server.
+****************************
 Press CTRL+X, Y and hit Enter to save the file.
 
 Restart MySQL server for the changes to take effect:
