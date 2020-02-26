@@ -1,0 +1,126 @@
+STEPS TO CONFIGURE PHP LARAVEL ON AWS EC2
+
+Pre-requisites:
+1.Amazon Linux AMI_1 Launched
+2.RDS Mysql instance Launched
+
+STEP 1:
+Configure RDS MySQL Instance:
+1.Create a Database with following details
+
+DB_CONNECTION=mysql
+DB_HOST=***********
+DB_PORT=3306
+DB_DATABASE=mysqldb2020
+DB_USERNAME=mysqldb2020
+DB_PASSWORD=mysqldb2020
+
+STEP 2:
+1.Launch Amazon Linux _1 instance.
+2.SSH to Instance, install and configure as follows:
+Login as root user
+sudo su –
+Install HTTP
+yum install httpd24 -y
+
+Install PHP 7.2
+
+yum install php72 php72-mysqlnd php72-imap php72-pecl-memcache php72-pecl-apcu php72-gd php72-mbstring -y
+yum install mod24_ssl -y
+
+Now Start httpd service
+
+service httpd start
+
+Go to your browser of choice and paste the Public IP address of the EC2 instance.
+
+ 
+
+Now that Apache server is running, we can proceed to install our Laravel Web App, but first, we need to make sure that in the event our instance is restarted, for whatever reason, that Apache will be automatically started as soon as the instance comes on. That way we wouldn’t have to ssh into the instance then starting it on the console each time. We will do this by running:
+chkconfig —add httpd
+chkconfig httpd on
+
+Install git on our instance:
+yum install git -y
+Navigate to the Apache public folder:
+cd /var/www/html
+Now clone your project in these directory. Sample project is clone in the following directory.
+git clone https://github.com/laravel/laravel.git
+
+Now that we’ve cloned a fresh Laravel project, we need to reconfigure our Apache server to point to the Laravel directory. we will do this by copying the code below to the bottom of the /etc/httpd/conf/httpd.conf file:
+
+Alias / /var/www/html/laravel/public/
+<Directory "/var/www/html/laravel/public">
+AllowOverride All
+Order allow,deny
+allow from all
+</Directory>
+
+Edit the .htaccess file:
+nano /var/www/html/laravel/public/.htaccess
+Then add RewriteBase / just below RewriteEngine On
+Run the command
+
+cd /var/www/html/laravel
+mv .env.example .env
+nano .env
+Paste in the code below. Make sure you substitute the DB_HOST parameter value for your generated MySQL endpoint
+
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
+LOG_CHANNEL=stack
+
+DB_CONNECTION=mysql
+DB_HOST=<RDS ENDPOINT>
+DB_PORT=3306
+DB_DATABASE=laravelaws
+DB_USERNAME=laravelaws
+DB_PASSWORD=laravelaws
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+
+Once done, press ^X, then enter y to the prompted question and hit enter.
+Now we need to give Apache write access to the storage folder, else Laravel will throw a write permission error.
+
+sudo chmod -R 777 /var/www/html/laravel/storage
+
+Let’s restart Apache to ensure immediate effect, and then return to the laravel folder:
+
+service httpd restart
+cd /var/www/html/Laravel
+
+To install composer(make sure you’re in the laravel directory):
+yum install wget -y
+wget https://getcomposer.org/composer.phar
+
+Confirm installation by running:
+php composer.phar
+Now that we have composer installed, we will now install all needed Laravel packages specified in the composer.json file:
+php composer.phar install
+Generate Application key:
+php artisan key:generate
+Create Authentication scaffold:
+php artisan make:auth
+User session will be stored on the database instead of the file on the Ec2 instance. This is because, when we eventually scale our Laravel Web App, the Load Balancer will balance traffic request across all instances. So if my session file was stored on instance 1 and my next request is directed to instance 5, instance 5 will not have access to my session file on instance 1, thus it will ask that i re-authenticate myself. To avoid this, we will manage user sessions on the database, since all instances are connected and have access to it.
+
+Create a sessions table migration:
+php artisan session:table
+Now let’s run Laravel migrations:
+php artisan migrate
+
+Paste the Public IP of your instance in your browser. You should see the Laravel welcome screen:
+
+ 
+
+Link Followed:
+1.https://www.google.com/url?sa=t&source=web&rct=j&url=https://medium.com/faun/deploying-and-scaling-a-laravel-app-on-aws-1349dcd7d17a&ved=2ahUKEwjwvPPOou3nAhWhwjgGHZnFBZkQFjAHegQIAxAB&usg=AOvVaw2-5ZP1rawEpLpOj8LrQZvf&cshid=1582653432314
+
+2.https://www.google.com/url?sa=t&source=web&rct=j&url=https://medium.com/faun/deploying-and-scaling-a-laravel-app-on-aws-1349dcd7d17a&ved=2ahUKEwjwvPPOou3nAhWhwjgGHZnFBZkQFjAHegQIAxAB&usg=AOvVaw2-5ZP1rawEpLpOj8LrQZvf&cshid=1582653480623
