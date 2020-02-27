@@ -1,0 +1,58 @@
+sudo apt-get install php
+
+php -v
+
+sudo apt-get install php-mbstring
+
+sudo apt-get install php-xml
+
+sudo apt-get install php-zip
+
+sudo apt-get install mysql-server php7.2-mysql
+
+sudo apt-get install curl
+
+curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+
+sudo chmod +x /usr/local/bin/composer
+
+cd /var/www/html/
+
+git clone here
+
+go inside cloned directory
+
+sudo composer install
+
+chown -R www-data.www-data /var/www/html/Laravel
+
+chmod -R 755 /var/www/html/Laravel
+
+chmod -R 777 /var/www/html/laravel/storage
+
+sudo nano .env 
+
+set database details
+
+vim /etc/apache2/sites-enabled/000-default.conf and Edit the Contents according to ur project details
+
+<VirtualHost *:80>
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/laravel/public
+
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride None
+        </Directory>
+        <Directory /var/www/laravel>
+                AllowOverride All
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+
+sudo service apache2 restart
+
