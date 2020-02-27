@@ -1,0 +1,20 @@
+To create dump of Primary Database:
+
+Export:
+
+mysqldump -u root -p classicmodels > classicmodels.sql
+
+classicmodels is the primary database. mysqldump is a tool to create a backup of classicmodels database and stored it in classicmodels.sql
+file. '>' is a export operator and it is stored in current directory in the above situation.
+
+we can copy specific tables from a particular database.
+
+mysqldump -u root -p classicmodels x y z > classicmodels.sql
+
+x,y,z are the specific tables to be copied in the backup file.
+
+Import:
+
+mysql -u root -p classicmodels_backup < classicmodels.sql
+
+classicmodels_backup is a backup database which will copy the backup from classicmodels.sql file using import operator from current directory.
